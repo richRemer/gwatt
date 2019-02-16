@@ -16,6 +16,9 @@ default: build
 
 build: $(bin)/$(app)
 
+install: $(bin)/$(app)
+	cp $< /usr/local/bin/$(app)
+
 clean:
 	rm -fr $(build)/* $(bin)/*
 
