@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define GWATT_REFRESH_INTERVAL 15
+
 static int read_file_value(const char* file) {
   FILE* f;
   long len;
@@ -34,13 +36,10 @@ static double charge_percent() {
   return (double)charge_now() / (double)charge_full();
 }
 
-static void on_button_press(GtkWidget* widget, GdkEvent* event, gpointer data) {
-  printf("clicked\n");
-}
-
 static gboolean refresh_meter(gpointer data) {
   GtkWidget* meter = (GtkWidget*)data;
   gtk_level_bar_set_value(GTK_LEVEL_BAR(meter), charge_percent());
+  return TRUE;
 }
 
 int main(int argc, char* argv[]) {
@@ -64,7 +63,7 @@ int main(int argc, char* argv[]) {
   gtk_container_add(GTK_CONTAINER(window), ebox);
   g_signal_connect(G_OBJECT(window), "destroy", gtk_main_quit, NULL);
 
-  g_timeout_add_seconds(60, refresh_meter, meter);
+  g_timeout_add_seconds(GWATT_REFRESH_INTERVAL, refresh_meter, meter);
   refresh_meter(meter);
 
   gtk_widget_show_all(window);
