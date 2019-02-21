@@ -28,4 +28,4 @@ $(bin)/$(app): $(objects)
 $(build)/%.o: $(src)/%.c
 	$(cc) $(cflags) -c $< -o $@
 
-.PHONY: default build clean
+.PHONY: default build install clean
