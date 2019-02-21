@@ -63,14 +63,35 @@ void init_styles() {
     g_object_unref(styles);
 }
 
+GList* load_icon_list() {
+  GList* icon_list = NULL;
+  GdkPixbuf* icon;
+  GtkIconTheme* theme;
+  gint* sizes;
+
+  theme = gtk_icon_theme_get_default();
+  sizes = gtk_icon_theme_get_icon_sizes(theme, "battery");
+
+  for (gint* size = sizes; *size; ++size) {
+    icon = gtk_icon_theme_load_icon(theme, "battery", *size, 0, NULL);
+    icon_list = g_list_prepend(icon_list, icon);
+  }
+
+  g_free(sizes);
+
+  return icon_list;
+}
+
 int main(int argc, char* argv[]) {
   GtkWidget* window;
   GtkWidget* ebox;
   GtkWidget* meter;
+  GList* icon_list;
 
   gtk_init(&argc, &argv);
-
   init_styles();
+
+  icon_list = load_icon_list();
 
   meter = gtk_level_bar_new();
   gtk_level_bar_set_value(GTK_LEVEL_BAR(meter), 0.0);
@@ -86,6 +107,7 @@ int main(int argc, char* argv[]) {
   gtk_window_set_title(GTK_WINDOW(window), "Power Meter");
   gtk_window_set_default_size(GTK_WINDOW(window), 250, 50);
   gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
+  gtk_window_set_icon_list(GTK_WINDOW(window), icon_list);
 #ifdef GWATT_EVENTS
   gtk_container_add(GTK_CONTAINER(window), ebox);
 #else
