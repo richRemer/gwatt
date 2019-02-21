@@ -1,0 +1,38 @@
+levelbar trough {
+    border-style: none;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+}
+
+levelbar trough block {
+    border-radius: 0;
+}
+
+levelbar trough block.empty {
+    background-color: rgba(100, 100, 100, 1);
+}
+
+levelbar trough block.full {
+    background-image: linear-gradient(
+        rgb(70, 213, 91),
+        rgb(56, 180, 74) 75%,
+        rgb(56, 168, 72));
+    border-color: rgb(56, 145, 69);
+}
+
+levelbar trough block.high {
+    background-image: linear-gradient(
+        rgb(255, 212, 149),
+        rgb(250, 173, 61) 75%,
+        rgb(238, 158, 42));
+    border-color: rgb(219, 142, 30);
+}
+
+levelbar trough block.low {
+    background-image: linear-gradient(
+        rgb(213, 70, 91),
+        rgb(180, 56, 74) 75%,
+        rgb(168, 56, 72));
+    border-color: rgb(145, 56, 69);
+}

@@ -4,6 +4,9 @@
 
 #define GWATT_REFRESH_INTERVAL 15
 
+extern unsigned char gwatt_css[];
+extern unsigned int gwatt_css_len;
+
 static int read_file_value(const char* file) {
   FILE* f;
   long len;
@@ -42,12 +45,31 @@ static gboolean refresh_meter(gpointer data) {
   return TRUE;
 }
 
+void init_styles() {
+    GtkCssProvider* styles;
+    GdkScreen* screen;
+    GdkDisplay* display;
+
+    display = gdk_display_get_default();
+    screen = gdk_display_get_default_screen(display);
+    styles = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_data(styles, gwatt_css, gwatt_css_len, NULL);
+    gtk_style_context_add_provider_for_screen(
+        screen,
+        GTK_STYLE_PROVIDER(styles),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(styles);
+}
+
 int main(int argc, char* argv[]) {
   GtkWidget* window;
   GtkWidget* ebox;
   GtkWidget* meter;
 
   gtk_init(&argc, &argv);
+
+  init_styles();
 
   meter = gtk_level_bar_new();
   gtk_level_bar_set_value(GTK_LEVEL_BAR(meter), 0.0);
@@ -60,6 +82,7 @@ int main(int argc, char* argv[]) {
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Power Meter");
   gtk_window_set_default_size(GTK_WINDOW(window), 250, 50);
+  gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
   gtk_container_add(GTK_CONTAINER(window), ebox);
   g_signal_connect(G_OBJECT(window), "destroy", gtk_main_quit, NULL);
 
