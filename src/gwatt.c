@@ -46,6 +46,24 @@ static gboolean refresh_meter(gpointer data) {
   return TRUE;
 }
 
+static gboolean orient(GtkWidget* window, GdkEventConfigure* event, gpointer data) {
+    GtkLevelBar* levelBar = (GtkLevelBar*)data;
+    GtkOrientable* orientable = (GtkOrientable*)data;
+    GtkOrientation orientation = gtk_orientable_get_orientation(orientable);
+    int width = event->width;
+    int height = event->height;
+
+    if (width > height && orientation != GTK_ORIENTATION_HORIZONTAL) {
+        gtk_orientable_set_orientation(orientable, GTK_ORIENTATION_HORIZONTAL);
+        gtk_level_bar_set_inverted(levelBar, FALSE);
+    } else if (height > width && orientation != GTK_ORIENTATION_VERTICAL) {
+        gtk_orientable_set_orientation(orientable, GTK_ORIENTATION_VERTICAL);
+        gtk_level_bar_set_inverted(levelBar, TRUE);
+    }
+
+    return FALSE;
+}
+
 void init_styles() {
     GtkCssProvider* styles;
     GdkScreen* screen;
@@ -114,6 +132,7 @@ int main(int argc, char* argv[]) {
   gtk_container_add(GTK_CONTAINER(window), meter);
 #endif
   g_signal_connect(G_OBJECT(window), "destroy", gtk_main_quit, NULL);
+  g_signal_connect(G_OBJECT(window), "configure-event", G_CALLBACK(orient), meter);
 
   g_timeout_add_seconds(GWATT_REFRESH_INTERVAL, refresh_meter, meter);
   refresh_meter(meter);
