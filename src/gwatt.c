@@ -12,19 +12,22 @@ static int read_file_value(const char* file) {
   FILE* f;
   long len;
   char* contents;
+  int result = 0;
 
-  f = fopen(file, "r");
-  fseek(f, 0, SEEK_END);
-  len = ftell(f);
-  fseek(f, 0, SEEK_SET);
+  if (f = fopen(file, "r")) {
+    fseek(f, 0, SEEK_END);
+    len = ftell(f);
+    fseek(f, 0, SEEK_SET);
 
-  contents = malloc(len + 1);
-  fread(contents, len, 1, f);
-  fclose(f);
-  contents[len] = 0;
+    contents = malloc(len + 1);
+    fread(contents, len, 1, f);
+    fclose(f);
+    contents[len] = 0;
 
-  int result = atoi(contents);
-  free(contents);
+    result = atoi(contents);
+    free(contents);
+  }
+
   return result;
 }
 
